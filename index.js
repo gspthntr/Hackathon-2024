@@ -1,5 +1,6 @@
-
-const jumpHeight = 10
+const canvasWidth = 1000;
+const canvasHeight = 800; 
+const jumpHeight = 10;
 const gravity = 0.4;
 let players = [
     {x: 250,
@@ -27,10 +28,29 @@ function playerMovements(){
         let nextX = player.x;
         let nextY = player.y;
         
-        keyIsDown(87) ? nextY -= player.speed:
-        keyIsDown(65) ? nextX -= player.speed:
-        keyIsDown(68) ? nextX += player.speed:
-        null;
+        // keyIsDown(87) && !player.isJumping ? (player.velY = -jumpHeight, player.isJumping = true): null;
+        // keyIsDown(65) ? nextX -= player.speed: null;
+        // keyIsDown(68) ? nextX += player.speed: null;
+        // keyIsDown(83) ? nextY += player.speed: null;
+        if(keyIsDown(87) && !player.isJumping){
+            player.velY = jumpHeight;
+            player.isJumping = true;
+        }
+        nextY += player.velY;
+        player.velocityY += gravity;
+        
+        
+        keyIsDown(83) && (nextY += player.speed);
+        keyIsDown(65) && ((nextX -= player.speed), (player.orientation = "left"));
+        keyIsDown(68) && ((nextX += player.speed), (player.orientation = "right"));
+        (player.y + player.height < 700) ? player.velY += gravity :
+        (player.velY = 0,
+        player.isJumping = false,
+        nextY = 700 - player.height);
+        
+        nextY += player.velY;
+        nextX = constrain(nextX, 0, canvasWidth - player.width);
+        nextY = constrain(nextY, -100, canvasHeight - 100 - player.height);
         player.y = nextY;
         player.x = nextX;
     })
@@ -44,7 +64,7 @@ function drawPlayers(){
 )
 }
 function setup(){
-    createCanvas(1000, 800);
+    createCanvas(canvasWidth, canvasHeight);
 }
 
 function draw(){
